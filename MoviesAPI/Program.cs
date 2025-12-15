@@ -12,7 +12,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddIdentity<ApplicationUsers, IdentityRole>()
                             .AddEntityFrameworkStores<ApplicationDbContext>();
 
-
 // this add Custom JWT Authentication
 builder.Services.AddJWTAuthentication(builder.Configuration);
 
