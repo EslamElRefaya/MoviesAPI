@@ -15,14 +15,12 @@ builder.Services.AddIdentity<ApplicationUsers, IdentityRole>()
 // this add Custom JWT Authentication
 builder.Services.AddJWTAuthentication(builder.Configuration);
 
-
 builder.Services.AddSwaggerGenAuthentication();
 
-
 //add Connection String
-var ConnectionString = builder.Configuration.GetConnectionString("DefaultConnectionString");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionString");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                       options.UseSqlServer(ConnectionString));
+                       options.UseSqlServer(connectionString));
 
 //add cors 1---> add in Services
 builder.Services.AddCors();
