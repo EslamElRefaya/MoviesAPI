@@ -32,6 +32,8 @@ builder.Services.AddScoped<GenreRepository>(); // because GenresService uses it 
 builder.Services.AddScoped<IMoviesAPIRepository<Movie>, MovieRepository>();
 builder.Services.AddScoped<IGenresService, GenresService>();
 builder.Services.AddScoped<IMoviesService, MoviesService>();
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 
 
 
