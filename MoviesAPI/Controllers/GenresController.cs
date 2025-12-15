@@ -14,7 +14,7 @@ namespace MoviesAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllGenres()
+        public async Task<IActionResult> GetAllGenresAsync()
         {
             var genres = await _genresService.GetAll();
             var data = _mapper.Map<IEnumerable<genreDto>>(genres);
@@ -22,7 +22,7 @@ namespace MoviesAPI.Controllers
         }
 
         [HttpGet("{GenreId}")]
-        public async Task<IActionResult> GetGenreById(int GenreId)
+        public async Task<IActionResult> GetGenreByIdAsync(int GenreId)
         {
             var genres = await _genresService.GetById(GenreId);
             var data=_mapper.Map<genreDto>(genres);    
@@ -30,13 +30,13 @@ namespace MoviesAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddGenre(CreateAndEditGenreDto dto)
+        public async Task<IActionResult> AddGenreAsync(CreateAndEditGenreDto createAndEditGenreDto)
         {
             //var genre = new Genre()
             //{
             //    Name = dto.Name
             //};
-            var genre = _mapper.Map<Genre>(dto);
+            var genre = _mapper.Map<Genre>(createAndEditGenreDto);
             await _genresService.AddGenre(genre);
 
             //this part to show items
@@ -45,23 +45,23 @@ namespace MoviesAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> EditGenre(int id, CreateAndEditGenreDto dto)
+        public async Task<IActionResult> EditGenreAsync(int id, CreateAndEditGenreDto createAndEditGenreDto)
         {
             var genre = await _genresService.GetById(id);
             if (genre == null)
                 return NotFound($"No Genre is been Founded to this id: {id}");
-            if (dto == null)
+            if (createAndEditGenreDto == null)
                 return BadRequest("Genre Is Requred!!");
 
             //genre.Name = dto.Name;
             //equal above //this to update
-            _mapper.Map(dto,genre);
+            _mapper.Map(createAndEditGenreDto, genre);
             await _genresService.UpdateGenre(genre);
             var data = _mapper.Map<genreDto>(genre);
             return Ok(data);
         }
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteGenre(int id)
+        public async Task<IActionResult> DeleteGenreAsync(int id)
         {
             var genre = await _genresService.GetById(id);
              if (genre is null)
