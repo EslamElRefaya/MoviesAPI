@@ -12,59 +12,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddIdentity<ApplicationUsers, IdentityRole>()
                             .AddEntityFrameworkStores<ApplicationDbContext>();
 
-
 // this add Custom JWT Authentication
 builder.Services.AddJWTAuthentication(builder.Configuration);
 
 
 builder.Services.AddSwaggerGenAuthentication();
-/*
-builder.Services.AddSwaggerGen(option =>
-{
-    option.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Version = "v1",
-        Title = "New Name to My Api",
-        Description = "My Frist Api",
-        Contact = new OpenApiContact
-        {
-            Name = "Eslam El Refaye",
-            Email = "eslammhmoudrefay14@gmail.com",
-            Url = new Uri("https://www.google.com"),
-        },
-        License = new OpenApiLicense
-        {
-            Name = "My License",
-            Url = new Uri("https://wwww.google.com"),
-        }
-    });
-    option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        Name = "Authorization",
-        Type= SecuritySchemeType.ApiKey,
-        Scheme = "Bearer",
-        BearerFormat="JWT",
-        In=ParameterLocation.Header,
-        Description="Enter your JWT key"
-    });
-    option.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference=new OpenApiReference
-                {
-                    Type=ReferenceType.SecurityScheme,
-                    Id="Bearer"
-                },
-                Name="Bearer",
-                In=ParameterLocation.Header
-            },
-            new List<string>()
-        }
-    });
-});
-*/
+
 
 //add Connection String
 var ConnectionString = builder.Configuration.GetConnectionString("DefaultConnectionString");
