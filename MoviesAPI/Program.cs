@@ -8,8 +8,14 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
+//add inject userManager and roleManager identity to application
+builder.Services.AddIdentity<ApplicationUsers, IdentityRole>()
+                            .AddEntityFrameworkStores<ApplicationDbContext>();
+
+
 // this add Custom JWT Authentication
 builder.Services.AddJWTAuthentication(builder.Configuration);
+
 
 builder.Services.AddSwaggerGenAuthentication();
 /*
@@ -75,15 +81,10 @@ builder.Services.AddScoped<IGenresService, GenresService>();
 builder.Services.AddScoped<IMoviesService, MoviesService>();
 
 
+
 // add Auto Mapper
 builder.Services.AddAutoMapper(typeof(Program));
 
-//add inject userManager and roleManager identity to application
-builder.Services.AddIdentity<ApplicationUsers, IdentityRole>()
-                            .AddEntityFrameworkStores<ApplicationDbContext>();
-
-builder.Services.AddAuthentication();
-builder.Services.AddAuthorization();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
