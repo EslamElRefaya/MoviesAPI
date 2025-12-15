@@ -19,7 +19,7 @@ namespace MoviesAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllMovies_Async()
+        public async Task<IActionResult> GetAllMoviesAsync()
         {
             var movies = await _moviesService.GetAllMovies();
 
@@ -28,7 +28,7 @@ namespace MoviesAPI.Controllers
         }
 
         [HttpGet("{MovieId}")]
-        public async Task<IActionResult> GetMovieByMovieId_Async(int MovieId)
+        public async Task<IActionResult> GetMovieByMovieIdAsync(int MovieId)
         {
             var movie = await _moviesService.GetMovieById(MovieId);
             if (movie == null) return NotFound("No Movie is been Founded !!");
@@ -37,7 +37,7 @@ namespace MoviesAPI.Controllers
         }
 
         [HttpGet("GetMoviesByGenreId/{genreId}")]
-        public async Task<IActionResult> GetMoviesByGenreId_Async(int genreId)
+        public async Task<IActionResult> GetMoviesByGenreIdAsync(int genreId)
         {
             var isVaild = await _genresService.IsVaildGenre(genreId);
             if (!isVaild)
@@ -47,21 +47,21 @@ namespace MoviesAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddMovie_Async([FromForm] AddMoviesDto dto)
+        public async Task<IActionResult> AddMovieAsync([FromForm] AddMoviesDto addMoviesDto)
         {
-            if (!_allowedExtensions.Contains(Path.GetExtension(dto.Poster.FileName).ToLower()))
+            if (!_allowedExtensions.Contains(Path.GetExtension(addMoviesDto.Poster.FileName).ToLower()))
                 return BadRequest("ony allowed .png ,.jpg ,.jpeg");
 
-            if (dto.Poster.Length > _maxAllowedPosterSize)
+            if (addMoviesDto.Poster.Length > _maxAllowedPosterSize)
                 return BadRequest("Max allow size is 1MB");
 
             //to check on Genre Id vaildation
-            var isVaildGenreId = await _genresService.IsVaildGenre(dto.GenreId);
+            var isVaildGenreId = await _genresService.IsVaildGenre(addMoviesDto.GenreId);
             if (!isVaildGenreId)
-                return BadRequest($"this GenreId:{dto.GenreId} is invaild");
+                return BadRequest($"this GenreId:{addMoviesDto.GenreId} is invaild");
 
             using var datastream = new MemoryStream();
-            await dto.Poster.CopyToAsync(datastream);
+            await addMoviesDto.Poster.CopyToAsync(datastream);
             /* var movie = new Movie
              {
                  GenreId = dto.GenreId,
@@ -72,7 +72,7 @@ namespace MoviesAPI.Controllers
                  StoreLine = dto.StoreLine,
              };*/
             //this part add items using autoMaper
-            var movie = _mapper.Map<Movie>(dto);
+            var movie = _mapper.Map<Movie>(addMoviesDto);
             movie.Poster = datastream.ToArray(); //this part add Munaly without autoMapper 
             await _moviesService.AddMovie(movie);
             //this part select item using autoMaper
@@ -81,29 +81,29 @@ namespace MoviesAPI.Controllers
         }
 
         [HttpPut("{MovieId}")]
-        public async Task<IActionResult> UpdateMoive_Async(int MovieId, [FromForm] UpdateMoviesDto dto)
+        public async Task<IActionResult> UpdateMoiveAsync(int MovieId, [FromForm] UpdateMoviesDto updateMoviesDto)
         {
             var movie = await _moviesService.GetMovieById(MovieId);
 
             if (movie == null)
                 return NotFound($"No Movie is been founded to this id {MovieId}");
 
-            if (dto == null)
+            if (updateMoviesDto == null)
                 return BadRequest();
 
             //to check on Genre Id vaildation
-            var isVaildGenreId = await _genresService.IsVaildGenre(dto.GenreId);
+            var isVaildGenreId = await _genresService.IsVaildGenre(updateMoviesDto.GenreId);
             if (!isVaildGenreId)
-                return BadRequest($"this GenreId:{dto.GenreId} is invaild");
+                return BadRequest($"this GenreId:{updateMoviesDto.GenreId} is invaild");
             //check if user add new Poster
-            if (dto.Poster != null)
+            if (updateMoviesDto.Poster != null)
             {
-                if (!_allowedExtensions.Contains(Path.GetExtension(dto.Poster.FileName).ToLower()))
+                if (!_allowedExtensions.Contains(Path.GetExtension(updateMoviesDto.Poster.FileName).ToLower()))
                     return BadRequest("ony allowed .png ,.jpg ,.jpeg");
-                if (dto.Poster.Length > _maxAllowedPosterSize)
+                if (updateMoviesDto.Poster.Length > _maxAllowedPosterSize)
                     return BadRequest("Max allow size is 1MB");
                 using var datastream = new MemoryStream();
-                await dto.Poster.CopyToAsync(datastream);
+                await updateMoviesDto.Poster.CopyToAsync(datastream);
                 movie.Poster = datastream.ToArray();
             }
             /*
@@ -113,14 +113,14 @@ namespace MoviesAPI.Controllers
             movie.StoreLine = dto.StoreLine;
             movie.GenreId = dto.GenreId;
             */
-            _mapper.Map(dto, movie);
+            _mapper.Map(updateMoviesDto, movie);
             await _moviesService.UpdateMovie(movie);
            var data = _mapper.Map<DetailsMovieDto>(movie);
             return Ok(data);
         }
 
         [HttpDelete("{movieId}")]
-        public async Task<IActionResult> DeleteMovie_Async(int movieId)
+        public async Task<IActionResult> DeleteMovieAsync(int movieId)
         {
             var movie = await _moviesService.GetMovieById(movieId);
             if (movie == null) return NotFound("No Movie is been Founded!");
